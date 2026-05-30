@@ -956,4 +956,94 @@ class UI {
     const homeTab = addTab("home");
     
     // SubTab General
-    const generalSubTab = homeTab.addSubTab
+    const generalSubTab = homeTab.addSubTab("General");
+    
+    // Seção Controls (Left)
+    const controlsSection = generalSubTab.addSection("Controls", "left");
+    controlsSection.addButton("Click Me!", () => sendToast("Button clicked!", 2000));
+    controlsSection.addButton("Show Message", () => sendToast("Hello from AICODE!", 2000));
+    controlsSection.addToggle("Enable Feature", false, (v) => console.log("Toggle:", v));
+    controlsSection.addCheckbox("Auto Save", true, (v) => console.log("Checkbox:", v));
+    
+    // Seção Values (Right)
+    const valuesSection = generalSubTab.addSection("Values", "right");
+    valuesSection.addSlider("Volume", 75, 0, 100, (v) => console.log("Volume:", v));
+    valuesSection.addSlider("Speed", 50, 0, 100, (v) => console.log("Speed:", v));
+    valuesSection.addDropdown("Mode", ["Easy", "Normal", "Hard", "Expert"], "Normal", (v) => console.log("Mode:", v));
+    
+    // SubTab Settings
+    const settingsSubTab = homeTab.addSubTab("Settings");
+    
+    const advancedSection = settingsSubTab.addSection("Advanced", "left");
+    advancedSection.addToggle("Mod Mode", APP.cfg.questionSpoof, (v) => {
+      APP.cfg.questionSpoof = v;
+      sendToast("Mod Mode: " + (v ? "ON" : "OFF"), 2000);
+    });
+    advancedSection.addToggle("Dark Mode", APP.cfg.darkMode, (v) => {
+      APP.cfg.darkMode = v;
+      sendToast("Dark Mode: " + (v ? "ON" : "OFF"), 2000);
+    });
+    advancedSection.addCheckbox("Debug", false, (v) => console.log("Debug:", v));
+    
+    const speedSection = settingsSubTab.addSection("Speed", "right");
+    speedSection.addSlider("Auto Speed", APP.cfg.autoSpeed, 750, 1500, (v) => {
+      APP.cfg.autoSpeed = v;
+      sendToast("Speed: " + v + "ms", 1500);
+    });
+    speedSection.addToggle("Auto Complete", APP.cfg.auto, (v) => {
+      APP.cfg.auto = v;
+      sendToast("Auto Complete: " + (v ? "ON" : "OFF"), 2000);
+    });
+    speedSection.addDropdown("Preset", ["Slow", "Normal", "Fast", "Ultra"], "Normal", (v) => {
+      const speeds = { "Slow": 1500, "Normal": 1000, "Fast": 750, "Ultra": 500 };
+      APP.cfg.autoSpeed = speeds[v] || 1000;
+      sendToast("Preset: " + v + " (" + APP.cfg.autoSpeed + "ms)", 2000);
+    });
+    
+    // Tab Settings
+    const settingsTab = addTab("settings");
+    const configSubTab = settingsTab.addSubTab("Config");
+    
+    const aboutSection = configSubTab.addSection("About", "left");
+    aboutSection.addButton("Version Info", () => sendToast(APP.name + " v" + APP.ver, 3000));
+    aboutSection.addButton("Credits", () => sendToast("Made with ❤️", 3000));
+    
+    // Tab User
+    const userTab = addTab("user");
+    const profileSubTab = userTab.addSubTab("Profile");
+    
+    const infoSection = profileSubTab.addSection("Info", "left");
+    infoSection.addButton("Login", () => sendToast("Login feature coming soon!", 2000));
+    infoSection.addCheckbox("Remember Me", false, (v) => console.log("Remember:", v));
+
+    console.log("[AICODE v" + APP.ver + "] Menu iniciado com sucesso!");
+    sendToast(APP.name + " v" + APP.ver + " pronto!", 2500);
+  }
+}
+
+// ============================================
+// INICIALIZAÇÃO
+// ============================================
+
+function initApp() {
+  try {
+    if (typeof Toastify === 'undefined') {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/toastify-js";
+      script.onload = () => {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css";
+        document.head.appendChild(link);
+        UI.init();
+      };
+      document.head.appendChild(script);
+    } else {
+      UI.init();
+    }
+  } catch (error) {
+    console.error("Erro ao iniciar:", error);
+  }
+}
+
+initApp();
